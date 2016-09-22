@@ -88,15 +88,8 @@ void setup(void)
     menu_routine(systemerrors);
     
 // no system errors, all systems go!
-
-// Siren and turn on solid LED, then thirty second delay, then siren
-  siren();
   
   digitalWrite(LEDPin, HIGH);  // LED on solid until ready to launch
-  
-// Now ready to launch, turn off LED until launch detected
-//  siren();
-  digitalWrite(LEDPin, LOW);
   
 // Get relevant launch data
   fahrenheit = gettemperature();
@@ -129,10 +122,16 @@ void setup(void)
   store(flightNo, fltNoAdd);
   
 // File created, OpenLog operative, give three beeps
-  noTone(beepPin); delay(1000); countout(3);
+  noTone(beepPin); delay(2000); countout(3);
+
+// here you put in delay until ready to launch
   
 // print data headers
   OpenLog.print("Time\t"); OpenLog.print("Alt.\t"); OpenLog.print("Xgees\t"); OpenLog.print("Ygees\t"); OpenLog.println("Zgees");
+  
+// Now ready to launch, turn off LED until launch detected
+  digitalWrite(LEDPin, LOW);
+// here you put in siren() to indicate we are in launch detect mode
   
   starttime = millis(); // initialize start time, will reset on launch detect
   

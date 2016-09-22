@@ -118,7 +118,8 @@ String showdate()
 
 void show_data()
 {
-  int flightNo, value;
+  int flightNo;
+  int value = 0;
   char filename[] = "FLT000.txt";
   
   flightNo = retrieve(fltNoAdd);
@@ -131,12 +132,12 @@ void show_data()
   Serial.print("Please enter the flight number you wish to display (1-"); Serial.print(flightNo);Serial.print("): ");
   do
   {
-    value = getinput();
-    Serial.println(char(value));
-    value = int(value) - 48;
+    while (value == 0)
+      value = Serial.parseInt();
   }
   while ((value < 1) || (value > flightNo));
-  
+  Serial.println(value);
+
   // make a new filename given new flight no.
   int counter, digit;
   counter = value;
