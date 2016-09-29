@@ -1,10 +1,10 @@
 // write data routine - may need delay adjustment
 void write_data(float time, int feet, int Xgees, int Ygees, int Zgees)
 {
-  OpenLog.print(time); OpenLog.print('\t');
-  OpenLog.print(feet); OpenLog.print('\t');
-  OpenLog.print(Xgees); OpenLog.print('\t');
-  OpenLog.print(Ygees); OpenLog.print('\t');
+  OpenLog.print(time); OpenLog.print('\t'); ;
+  OpenLog.print(feet); OpenLog.print('\t'); ;
+  OpenLog.print(Xgees); OpenLog.print('\t'); ;
+  OpenLog.print(Ygees); OpenLog.print('\t'); ;
   OpenLog.println(Zgees);
 }
 
@@ -118,11 +118,14 @@ void display_data(char *fileName)
       if(OpenLog.read() == '\r') break;
   }
    
-  for(int timeOut = 0 ; timeOut < 1000 ; timeOut++) 
+  for(unsigned long timeOut = 0; timeOut < 1000000; timeOut++) 
   {
     while(OpenLog.available())
+    {
       Serial.write(OpenLog.read());
+    }
   }
   Serial.println();
+
 }
 

@@ -1,7 +1,7 @@
 // Initialize serial i/o and pins
 void initialize()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(LEDPin, OUTPUT);
   pinMode(beepPin, OUTPUT);
   pinMode(resetOpenLog, OUTPUT);
@@ -18,7 +18,10 @@ int systemtest()
   
 // If menuPin is LOW, go to menu
   if (digitalRead(menuPin) == LOW)
+  {
     error = 1;
+    return error;
+  }
 
 // menu not set
 /* Initialise the accelerometer */
@@ -34,14 +37,17 @@ int systemtest()
     }
   }
   if (!good) 
+  {
     error = 2;
+    return error;
+  }
 
   // accelerometer okay, so set range of 16G for accelerometer
   accel.setRange(ADXL345_RANGE_16_G); // for ADXL 345
   delay(50);
 
 /* Initialise the altimeter */
-  barometer.begin();
+  barometer.begin();  // there is no error check for the T5403
   
   return error;
 }

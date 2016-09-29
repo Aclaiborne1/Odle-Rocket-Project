@@ -46,6 +46,7 @@
 #define beepPin 6
 #define LEDPin 7
 #define liftoff_ht 20 // test for liftoff by 20 feet
+#define landing_ht 2 // test for landing at 2 feet
 #define maxBytes 0 // start of EEPROM address space
 
 // define global constants - calculated just once, these are EEPROM addresses
@@ -72,7 +73,7 @@ sensors_event_t event;
 
 void setup(void) 
 {
-  int systemerrors, flightNo, feet, Xgees, Ygees, Zgees, landedCount;
+  int systemerrors, flightNo, records, feet, Xgees, Ygees, Zgees, landedCount;
   int a1, a2, a3; // used to catch outliers for apogee
   boolean launched, landed;
 
@@ -96,6 +97,7 @@ void setup(void)
   groundLevelPressure = getgroundLevelPressure();
 
 // initialize variables
+  records = 0;
   landed = false;
   launched = false;
   landedCount = 0;
@@ -158,6 +160,7 @@ void setup(void)
       Zgees = getZgees();
       elapsedtime = (millis() - starttime) / 1000.0;
       write_data(elapsedtime, feet, Xgees, Ygees, Zgees);
+      records++;
       
       // catching apogee values in a1, a2, a3
       if (feet > a1)
@@ -168,14 +171,12 @@ void setup(void)
         a3 = feet;
 
       // test for landing
-      if (feet < 2) {landedCount++;}
-      if (feet >= 2) {landedCount = 0;}
+      if (feet < landing_ht) {landedCount++;}
+      if (feet >= landing_ht) {landedCount = 0;}
       if  (landedCount == 3) // landing confirmed with three subsequent readings less than two feet
         landed = true;
     }
-
-    // delay 5 milliseconds before getting next reading  
-    delay(5);
+    delay(5); // delay between records
   }     
   while(!landed); // loop until landed
 // END MAIN LOOP
@@ -183,6 +184,8 @@ void setup(void)
   apogee = a3; // throw out a1 and a2 as outliers
     
 // write out summary
+  OpenLog.println();
+  OpenLog.print(records); OpenLog.println(" records written.");
   OpenLog.println();
   OpenLog.println("Summary:");
   OpenLog.print("Date: "); OpenLog.println(showdate());
